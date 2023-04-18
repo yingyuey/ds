@@ -1,59 +1,4 @@
-//int number[101], i = 0, p = 1;
-//char symbol[101], s[256], t[256];
-//void push()
-//{
-//	symbol[++p] = s[i];
-//}
-//void pop()
-//{
-//	switch (symbol[p--])
-//	{
-//	    case'+':number[p] += number[p + 1]; break;
-//		case'-':number[p] -= number[p + 1]; break;
-//		case'*':number[p] *= number[p + 1]; break;
-//		case'/':number[p] /= number[p + 1]; break;
-//	}
-//}
-//bool can()
-//{
-//	if ((s[i] == '+' || s[i] == '-') && symbol[p] != '(') return 1;
-//	if ((s[i] == '*' || s[i] == '/')
-//		&& (symbol[p] == '*' || symbol[p] == '/'))return 1;
-//	return 0;
-//}
-//
-//int main()
-//{
-//	printf("string:"); gets_s(s);
-//	s[strlen(s)] = ')'; symbol[p] = '(';
-//	while (i < strlen(s))
-//	{
-//		while (s[i] == '(')
-//		{
-//			push(); i++;
-//		}
-//		int x = 0;
-//		while (s[i] >= '0' && s[i] <= '9')
-//			x = x * 10 + s[i++] - '0';
-//		number[p] = x;
-//		do
-//		{
-//			if (s[i] == ')')
-//			{
-//				while (symbol[p] != '(')pop();
-//				number[--p] = number[p + 1];
-//			}
-//			else
-//			{
-//				while (can())pop();
-//				push();
-//			}
-//			i++;
-//		} while (i < strlen(s) && s[i - 1] == ')');
-//	}
-//	printf("Result=%d", number[0]);
-//	return 0;
-//}
+
 
 #pragma warning(disable : 4996)
 #include<cstdio>
@@ -64,10 +9,10 @@
 #include<ctype.h>
 using namespace std;
 #define _CRT_SECURE_NO_WARNINGS
-#include"Stack.h"
+#include"../../../Stack.h"
 
 
-//À¨ºÅÆ¥ÅäËã·¨
+//æ‹¬å·åŒ¹é…ç®—æ³•
 bool paren(const char exp[], int lo, int hi)
 {
 	Stack<char> S;
@@ -86,11 +31,11 @@ bool paren(const char exp[], int lo, int hi)
 //readNumber
 void readNumber(char*& p, Stack<double>& stk)
 {
-	stk.push((double)(*p - '0'));//×ª»»Îªfloat½øÕ»
-	while (isdigit(*(++p)))//¶àÎ»ÊıÇé¿ö
+	stk.push((double)(*p - '0'));//è½¬æ¢ä¸ºfloatè¿›æ ˆ
+	while (isdigit(*(++p)))//å¤šä½æ•°æƒ…å†µ
 		stk.push(stk.pop() * 10 + (*p - '0'));
-	if ('.' != *p)return;//Ö»ÓĞÕûÊı£¬½áÊøÈëÕ»
-	float fraction = 1;//Ê®Î»Ğ¡Êı->°ÙÎ»Ğ¡Êı
+	if ('.' != *p)return;//åªæœ‰æ•´æ•°ï¼Œç»“æŸå…¥æ ˆ
+	float fraction = 1;//åä½å°æ•°->ç™¾ä½å°æ•°
 	while (isdigit(*(++p)))
 		stk.push(stk.pop() * (*p - '0') * (fraction /= 10));
 }
@@ -107,32 +52,32 @@ Operator optr2rank(char op)
 	case '!': return FAC;
 	case '(': return L_P;
 	case ')': return R_P;
-	case '\0': return EOE;//ÆğÊ¼·ûÓëÖÕÖ¹·û
-	default:exit(-1);//Î´ÖªÔËËã·û
+	case '\0': return EOE;//èµ·å§‹ç¬¦ä¸ç»ˆæ­¢ç¬¦
+	default:exit(-1);//æœªçŸ¥è¿ç®—ç¬¦
 	}
 }
-char orderBetween(char op1, char op2)//±È½ÏÔËËã·ûÖ®¼äµÄÓÅÏÈ¼¶
+char orderBetween(char op1, char op2)//æ¯”è¾ƒè¿ç®—ç¬¦ä¹‹é—´çš„ä¼˜å…ˆçº§
 {
 	return pri[optr2rank(op1)][optr2rank(op2)];
 }
 
 //append
-void append(char*& rpn, double opnd)//½«²Ù×÷Êı½ÓÖÁRPNÄ©Î²
+void append(char*& rpn, double opnd)//å°†æ“ä½œæ•°æ¥è‡³RPNæœ«å°¾
 {
-	int n=strlen(rpn); //RPNµ±Ç°³¤¶È
+	int n=strlen(rpn); //RPNå½“å‰é•¿åº¦
 	char buf[64];
 	if (opnd != (float)(int)opnd) 
-		sprintf_s(buf, "%.2f10", opnd);//¸¡µã¸ñÊ½»òÕûÊı¸ñÊ½
+		sprintf_s(buf, "%.2f10", opnd);//æµ®ç‚¹æ ¼å¼æˆ–æ•´æ•°æ ¼å¼
 	else 
 		sprintf_s(buf, " %d \0", (int)opnd);
 	rpn = (char*)realloc(rpn, sizeof(char) * (n+strlen(buf) + 1)); 
-	strcat(rpn, buf);//À©Õ¹¿Õ¼ä
+	strcat(rpn, buf);//æ‰©å±•ç©ºé—´
 }
 void append(char*& rpn, char optr) {
 	int n = strlen(rpn);
 	rpn = (char*)realloc(rpn, sizeof(char) * (n + 3));
 	sprintf(rpn + n, "%c", optr); 
-	rpn[n + 2] = '\0';//½ÓÈëÖ¸¶¨µÄÔËËã·û
+	rpn[n + 2] = '\0';//æ¥å…¥æŒ‡å®šçš„è¿ç®—ç¬¦
 }
 
 //calcu
@@ -167,31 +112,31 @@ double calcu(double a, char op, double b)
 	}
 }
 
-//ÇóÖµËã·¨
+//æ±‚å€¼ç®—æ³•
 double evaluate(char* S, char*& RPN)
 {
-	Stack<double> opnd; Stack<char> optr;//ÔËËãÊıÕ»£¬ÔËËã·ûÕ»
+	Stack<double> opnd; Stack<char> optr;//è¿ç®—æ•°æ ˆï¼Œè¿ç®—ç¬¦æ ˆ
 	char* expr = S;
 	optr.push('\0');
-	while (!optr.empty())//ÔÚÔËËã·ûÕ»·Ç¿ÕÖ®Ç°£¬Öğ¸ö´¦Àí±í´ïÊ½ÖĞµÄ¸÷×Ö·û
+	while (!optr.empty())//åœ¨è¿ç®—ç¬¦æ ˆéç©ºä¹‹å‰ï¼Œé€ä¸ªå¤„ç†è¡¨è¾¾å¼ä¸­çš„å„å­—ç¬¦
 	{
-		if (isdigit(*S)) {//Èôµ±Ç°×Ö·ûÎª²Ù×÷Êı
+		if (isdigit(*S)) {//è‹¥å½“å‰å­—ç¬¦ä¸ºæ“ä½œæ•°
 			readNumber(S, opnd); 
-			append(RPN, opnd.top());//¶ÁÈë²Ù×÷Êı£¬½ÓÖÁRPNÄ©Î²
+			append(RPN, opnd.top());//è¯»å…¥æ“ä½œæ•°ï¼Œæ¥è‡³RPNæœ«å°¾
 		}
 		else 
-		{//ÈôÎŞ=ÎªÔËËã·û
+		{//è‹¥æ— =ä¸ºè¿ç®—ç¬¦
 			switch (orderBetween(optr.top(), *S))
 			{
-			case'<':optr.push(*S); S++; break;//ÍÆ³Ù£¬ÔËËã·ûÈëÕ»
-			case'=':optr.pop(); S++; break;//ÏàµÈ£¬ÍÑÀ¨ºÅ½ÓÊÜÏÂÒ»×Ö·û
+			case'<':optr.push(*S); S++; break;//æ¨è¿Ÿï¼Œè¿ç®—ç¬¦å…¥æ ˆ
+			case'=':optr.pop(); S++; break;//ç›¸ç­‰ï¼Œè„±æ‹¬å·æ¥å—ä¸‹ä¸€å­—ç¬¦
 			case'>': 
-			{//ÓÅÏÈ¼¶¸ü¸ß£¬¼ÆËã£¬½á¹ûÖØĞÂÈëÕ»
+			{//ä¼˜å…ˆçº§æ›´é«˜ï¼Œè®¡ç®—ï¼Œç»“æœé‡æ–°å…¥æ ˆ
 				char op = optr.pop(); append(RPN, op);
 				if ('!' == op) 
-				{//ÊôÓÚÒ»ÔªÔËËã·û
-					float pOpnd = opnd.pop();//Ö»ĞèÈ¡³öÒ»¸ö²Ù×÷Êı 
-					opnd.push(calcu(op, pOpnd));//Ò»Ôª¼ÆËã½á¹ûÈëÕ»
+				{//å±äºä¸€å…ƒè¿ç®—ç¬¦
+					float pOpnd = opnd.pop();//åªéœ€å–å‡ºä¸€ä¸ªæ“ä½œæ•° 
+					opnd.push(calcu(op, pOpnd));//ä¸€å…ƒè®¡ç®—ç»“æœå…¥æ ˆ
 				}
 				else 
 				{
@@ -208,7 +153,7 @@ double evaluate(char* S, char*& RPN)
 }
 
 char* removeSpace(char* s)
-{ //ÌŞ³ıs[]ÖĞµÄ°×¿Õ¸ñ
+{ //å‰”é™¤s[]ä¸­çš„ç™½ç©ºæ ¼
 	char* p = s, * q = s;
 	while (true)
 	{
